@@ -2,6 +2,7 @@ require 'minitest/autorun'
 require 'minitest/pride'
 require './lib/Ingredient'
 require './lib/Recipe'
+require 'pry'
 
 
 class RecipeTest < Minitest::Test
@@ -21,26 +22,40 @@ class RecipeTest < Minitest::Test
   end
 
   def test_ingredient_require_starts_empty
-    expected = {}
-    assert_equal expected, @mac_and_cheese.ingredients_required
+    assert_equal ({}), @mac_and_cheese.ingredients_required
   end
-# pry(main)> mac_and_cheese.add_ingredient(cheese, 2)
-#
-# pry(main)> mac_and_cheese.add_ingredient(mac, 8)
-#
-# pry(main)> mac_and_cheese.ingredients_required
-# # => {#<Ingredient:0x00007fd7811553c8...> => 2, #<Ingredient:0x00007fd78110b0e8...> => 8}
-#
-# pry(main)> mac_and_cheese.amount_required(cheese)
-# # => 2
-#
-# pry(main)> mac_and_cheese.amount_required(mac)
-# # => 8
-#
-# pry(main)> mac_and_cheese.ingredients
-# # => [#<Ingredient:0x007fe8438c7a70...>, #<Ingredient:0x007fe843857f40...>]
-#
-# pry(main)> mac_and_cheese.total_calories
-# # => 440
 
+  def test_can_add_ingredient
+    @mac_and_cheese.add_ingredient(@cheese, 2)
+
+    expected = {
+      @cheese => 2
+    }
+
+  assert_equal expected, @mac_and_cheese.ingredients_required
+    @mac_and_cheese.add_ingredient(@mac, 8)
+
+    expected = { @cheese => 2,@mac => 8}
+  assert_equal expected, @mac_and_cheese.ingredients_required
+  end
+
+  def test_amount_required
+    @mac_and_cheese.add_ingredient(@cheese, 2)
+    @mac_and_cheese.add_ingredient(@mac, 8)
+    assert_equal 2, @mac_and_cheese.amount_required(@cheese)
+    assert_equal 8, @mac_and_cheese.amount_required(@mac)
+  end
+
+  def test_recipe_ingredients
+    @mac_and_cheese.add_ingredient(@cheese, 2)
+    @mac_and_cheese.add_ingredient(@mac, 8)
+    assert_equal [@cheese, @mac], @mac_and_cheese.ingredients
+
+  end
+
+  def test_calories_in_recipe
+    @mac_and_cheese.add_ingredient(@cheese, 2)
+    @mac_and_cheese.add_ingredient(@mac, 8)
+    assert_equal 440, @mac_and_cheese.calories
+  end
 end
